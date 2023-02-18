@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>PAGINA WEB</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+  <header>
+    <h1>INFORMACION USUARIO</h1>
+  </header>
+
+  <form>
+    Nombre: <input type="text" id="name"><br><br>
+    Apellido: <input type="text" id="surname"><br><br>
+    Teléfono: <input type="text" id="phone"><br><br>
+    Dirección: <input type="text" id="address"><br><br>
+    Ciudad: <input type="text" id="city"><br><br>
+
+  </form>
+  <button id="createButton">Agregar Usuario</button>
+  <button id="clearButton">Limpiar</button>
+
+  <table id="dataTable">
+    <tr>
+      <th>Nombre</th>
+      <th>Apellido</th>
+      <th>Teléfono</th>
+      <th>Direccion</th>
+      <th>Ciudad</th>
+      <th>Edit</th>
+      <th>Delete</th>
+    </tr>
+  </table>
+
+  <script>
+
+// Definir función para limpiar campos
+function clearFields() {
+  $("#name").val("");
+  $("#surname").val("");
+  $("#phone").val("");
+  $("#address").val("");
+  $("#city").val("");
+}
+
+// Asignar función a botón de limpieza
+$("#clearButton").click(function() {
+  clearFields();
+});
+
+
+    $(document).ready(function() {
+      $.ajax({
+        url: "http://localhost:3000/read",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+          for (var i = 0; i < data.length; i++) {
+            $("#dataTable").append("<tr><td>" + data[i].name + "</td><td>" + data[i].surname + "</td><td>" + data[i].phone + "</td><td>" + data[i].address + "</td><td>" + data[i].city + "</td><td><button class='editButton' data-id='" + data[i]._id + "'>Edit</button></td><td><button class='deleteButton' data-id='" + data[i]._id + "'>Delete</button></td></tr>");
+          }
+        }
+      });
+      
+
+$("#createButton").click(function() {
+    var name = $("#name").val();
+    if (name.trim() === "") {
+        alert("Por favor ingrese un nombre.");
+        return;
+    } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+        alert("El nombre solo puede contener letras y espacios.");
+        return;
+    }
+
+    var surname = $("#surname").val();
+    if (surname.trim() === "") {
+        alert("Por favor ingrese un apellido.");
+        return;
+    } else if (!/^[a-zA-Z\s]+$/.test(surname)) {
+        alert("El apellido solo puede contener letras y espacios.");
+        return;
+    }
+
+    var phone = $("#phone").val();
+    if (phone.trim() === "") {
+        alert("Por favor ingrese un número de teléfono.");
+        return;
+    } else if (!/^\d{10}$/.test(phone)) {
+        alert("Por favor ingrese un número de teléfono válido de 10 dígitos.");
+        return;
+    }
+
+    var address = $("#address").val();
+    if (address.trim() === "") {
+        alert("Por favor ingrese una dirección.");
+        return;
+    } else if (address.trim().length < 5) {
+        alert("La dirección debe tener al menos 5 caracteres.");
+        return;
+    }
+
+    var city = $("#city").val();
+    if (city.trim() === "") {
+        alert("Por favor ingrese una ciudad.");
+        return;
+    } else if (!/^[a-zA-Z\s]+$/.test(city)) {
+        alert("Por favor ingrese una ciudad válida (solo letras no se permiten numeros).");
+        return;
+    }
+
+    $.ajax({
+        url: "http://localhost:3000/create",
+        type: "POST",
+        data: { name: name, surname: surname, phone: phone, address: address, city: city },
+        success: function(data) {
+            $("#dataTable").append("<tr><td>" + name + "</td><td>" + surname + "</td><td>" + phone + "</td><td>" + address + "</td><td>" + city + "</td><td><button class='editButton' data-id='" + data._id + "'>Edit</button></td><td><button class='deleteButton' data-id='" + data._id + "'>delete</button></td></tr>");
+            alert("Registro creado exitosamente!");
+    
+        }
+    });
+});
+
+$(document).on("click", ".editButton", function() {
+  var id = $(this).data("id");
+  var name = $(this).parent().siblings().eq(0).text();
+  var surname = $(this).parent().siblings().eq(1).text();
+  var phone = $(this).parent().siblings().eq(2).text();
+  var address = $(this).parent().siblings().eq(3).text();
+  var city = $(this).parent().siblings().eq(4).text();
+
+        
+$(this).parent().siblings().eq(0).html("<input type='text' id='editName' value='" + name + "'>");
+$(this).parent().siblings().eq(1).html("<input type='text' id='editSurname' value='" + surname + "'>");
+$(this).parent().siblings().eq(2).html("<input type='text' id='editPhone' value='" + phone + "'>");
+$(this).parent().siblings().eq(3).html("<input type='text' id='editAddress' value='" + address + "'>");
+$(this).parent().siblings().eq(4).html("<input type='text' id='editCity' value='" + city + "'>");
+
+$(this).parent().html("<button id='saveButton' data-id='" + id + "'>Save</button>");
+});
+
+$(document).on("click", "#saveButton", function() {
+var id = $(this).data("id");
+var name = $("#editName").val();
+var surname = $("#editSurname").val();
+var phone = $("#editPhone").val();
+var address = $("#editAddress").val();
+var city = $("#editCity").val();
+
+
+$.ajax({
+url: "http://localhost:3000/update",
+type: "PUT",
+data: {id: id, name: name, surname: surname, phone: phone, address: address, city: city},
+success: function(data) {
+$("#saveButton").parent().siblings().eq(0).text(name);
+$("#saveButton").parent().siblings().eq(1).text(surname);
+$("#saveButton").parent().siblings().eq(2).text(phone);
+$("#saveButton").parent().siblings().eq(3).text(address);
+$("#saveButton").parent().siblings().eq(4).text(city);
+$("#saveButton").parent().html("<button class='editButton' data-id='" + id + "'>Edit</button>");
+alert("Registro actualizado exitosamente!");
+}
+});
+});
+
+
+$(document).on("click", ".deleteButton", function() {
+  var id = $(this).data("id");
+
+  if (confirm("¿Está seguro que desea eliminar este registro?")) {
+    $.ajax({
+      url: "http://localhost:3000/delete",
+      type: "DELETE",
+      data: { id: id },
+      success: function(data) {
+        $("button[data-id='" + id + "']").closest("tr").remove();
+        alert("Registro eliminado exitoxamente!");
+      }
+    });
+  }
+});
+
+
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+/* Add hover effects to table rows and columns */
+form{
+  font-weight:bolder;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th,td {
+  padding: 10px;
+  text-align:center;
+  border: 2px solid #ddd;
+}
+
+th {
+  font-family: Arial, sans-serif;
+  background-color:aquamarine;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+thead {
+  background-color: #4CAF50;
+  color: #fff;
+}
+
+.editButton,.deleteButton {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.editButton i, .deleteButton i {
+  font-size: 10px;
+}
+
+.editButton:before {
+  content: "\270E";
+  font-size: 16px;
+  color:#4CAF50;
+}
+
+.deleteButton:before {
+  content: "\2716";
+  font-size: 16px;
+  color:#f44336;
+}
+
+.editButton i {
+  color: #2196F3;
+}
+
+.deleteButton i {
+  color: #f44336;
+}
+
+.deleteButton {
+  margin-left: 1em;
+}
+
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 1em;
+}
+
+.pageLink {
+  color: #4CAF50;
+  text-decoration: none;
+  margin: 0 0.5em;
+}
+
+.activePage {
+  font-weight: bold;
+}
+
+.disabledPage {
+  color: #ddd;
+}
+
+#createButton {
+  background-color: #4CAF50;
+  color: white;
+  padding: 7px 7px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 10px;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px #888888;
+}
+
+#clearButton {
+  background-color: #4CAF50;
+  color: white;
+  padding: 7px 22px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 10px;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px #888888;
+}
